@@ -1,0 +1,32 @@
+# --- Repomix Output ---
+# AIが自分自身の過去の出力を読み込んで混乱するため除外必須
+repomix-output.xml
+
+# --- Python / uv (Backend) ---
+.venv/
+.uv/
+__pycache__/
+*.pyc
+backend/uv.lock
+
+# --- Frontend Build & Tooling ---
+frontend/dist/
+frontend/.vite/
+node_modules/
+
+# --- API Generated Code (Orval) ---
+# orval.config.ts に基づいて自動生成されるファイル群。
+# 構造理解には不要なためトークン節約のため除外。
+frontend/src/api/generated/
+
+# --- Environment & Databases ---
+.env
+.env.local
+.env.*.local
+*.db
+*.sqlite3
+instance/
+
+# --- System Files ---
+.DS_Store
+.git/

@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: csaf_db
+      POSTGRES_USER: csaf_user
+      POSTGRES_PASSWORD: csaf_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U csaf_user -d csaf_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://csaf_user:csaf_password@db:5432/csaf_db
+      JWT_SECRET_KEY: dev-secret-key-change-in-production
+    volumes:
+      - ./backend/app:/app/app
+      - ./backend/run.py:/app/run.py
+    ports:
+      - "5001:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      target: dev
+    environment:
+      BACKEND_URL: http://backend:5000
+    volumes:
+      - ./frontend:/app           # フロントエンド全体を同期
+      - /app/node_modules # コンテナ内の node_modules を消さないための保護
+      # - ./frontend/src:/app/src
+      # - ./frontend/public:/app/public
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
