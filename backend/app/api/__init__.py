@@ -3,7 +3,7 @@ from functools import wraps
 
 from flask import abort, request
 
-from ..extensions import auth, db
+from ..extensions import auth as http_auth, db
 from ..models.audit_log import AuditLog
 
 
@@ -11,7 +11,7 @@ def require_role(*roles: str):
     def decorator(f):
         @wraps(f)
         def decorated(*args, **kwargs):
-            if auth.current_user.role not in roles:
+            if http_auth.current_user.role not in roles:
                 abort(403, description="Insufficient permissions")
             return f(*args, **kwargs)
 
@@ -27,7 +27,7 @@ def log_action(
     advisory_id: int | None = None,
     detail: dict | None = None,
 ) -> None:
-    user = auth.current_user
+    user = http_auth.current_user
     log = AuditLog(
         user_id=user.id if user else None,
         action=action,
