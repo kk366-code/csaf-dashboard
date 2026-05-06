@@ -25,6 +25,7 @@ CSAF (Common Security Advisory Framework) アドバイザリを管理・公開�
 
 ```bash
 git clone <repository-url>
+cd csaf-dashboard
 cp frontend/.env.example frontend/.env
 docker compose up
 ```
