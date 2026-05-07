@@ -26,6 +26,8 @@ instance.interceptors.response.use(
   },
 );
 
-export const apiClient = <T>(config: AxiosRequestConfig): Promise<T> => {
-  return instance(config).then(({ data }) => data);
-};
+// export const apiClient = <T>(config: AxiosRequestConfig): Promise<T> => {
+//   return instance(config).then(({ data }) => data);
+// };
+
+export const apiClient = instance
