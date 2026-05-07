@@ -68,6 +68,14 @@ cp .env.example .env
 npm run dev
 ```
 
+### API クライアント再生成（バックエンド起動後）
+
+```bash
+cd frontend
+npm run generate-api
+```
+
+
 ## 環境変数
 
 ### バックエンド
