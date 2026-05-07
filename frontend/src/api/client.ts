@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { AxiosRequestConfig } from "axios";
 import { useAuthStore } from "@/stores/authStore";
 
 const instance = axios.create({
@@ -25,4 +26,6 @@ instance.interceptors.response.use(
   },
 );
 
-export const apiClient = instance;
+export const apiClient = <T>(config: AxiosRequestConfig): Promise<T> => {
+  return instance(config).then(({ data }) => data);
+};
