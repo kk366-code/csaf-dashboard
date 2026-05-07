@@ -187,3 +187,26 @@ uv lock
 *   **RSS:** サイドバーの「RSS フィード」リンクは `GET /rss.xml` を直接呼び出します。
 
 ログイン後の主なワークフローは、**「作成 (POST) → 申請 (submit) → 承認 (approve) → 公開 (publish)」** というAPIコールの連鎖で構成されています。
+
+## 権限・ワークフロー詳細
+
+本システムは、アドバイザリのライフサイクル管理のために厳格なロールベースアクセス制御（RBAC）を導入しています。
+
+### ユーザーロールと権限マトリクス
+
+| 機能 | 操作 | Viewer | Editor | Admin | API エンドポイント |
+| :--- | :--- | :---: | :---: | :---: | :--- |
+| **ダッシュボード** | 統計閲覧 | ✅ | ✅ | ✅ | `GET /advisories/stats` |
+| **アドバイザリ** | 閲覧 | ✅ | ✅ | ✅ | `GET /advisories/` |
+| | 作成・編集 | ❌ | ✅ | ✅ | `POST/PUT /advisories/` |
+| | 削除(Draftのみ) | ❌ | ✅ | ✅ | `DELETE /advisories/{id}` |
+| **ワークフロー** | レビュー申請 | ❌ | ✅ | ✅ | `POST /advisories/{id}/submit` |
+| | **承認 (Approve)** | ❌ | **✅** | ✅ | `POST /advisories/{id}/approve` |
+| | 差し戻し | ❌ | ✅ | ✅ | `POST /advisories/{id}/reject` |
+| | **公開 (Publish)** | ❌ | ❌ | **✅** | `POST /advisories/{id}/publish` |
+| **管理機能** | ユーザー管理 | ❌ | ❌ | ✅ | `GET/POST/PUT /users/` |
+| | 監査ログ閲覧 | ❌ | ❌ | ✅ | `GET /audit-logs/` |
+
+> [!NOTE]
+> **Editor ロールの権限範囲について**
+> Editor は内容の精査と「承認」までを行うことができますが、最終的な「公開（外部配信）」は Admin ロールのみが実行可能です。これにより、二名体制によるダブルチェック（承認者と公開者の分離）運用が可能です。
